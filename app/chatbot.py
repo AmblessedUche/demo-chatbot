@@ -1,6 +1,9 @@
 from transformers import pipeline
+import difflib
 
+# Load the QA pipeline
 qa_pipeline = pipeline("question-answering", model="deepset/bert-base-cased-squad2")
+print("Device set to use", qa_pipeline.device)
 
 # Disease contexts dictionary with detailed info
 disease_contexts = {
@@ -45,23 +48,36 @@ Typhoid fever is caused by Salmonella Typhi bacteria.
 """
 }
 
+# Fuzzy match helper
+def find_closest_disease(question):
+    diseases = list(disease_contexts.keys())
+    matches = difflib.get_close_matches(question.lower(), diseases, n=1, cutoff=0.4)
+    if matches:
+        return matches[0]
+    for d in diseases:
+        if d in question.lower():
+            return d
+    return None
+
+# QA logic without fallback
 def get_response(question):
-    q_lower = question.lower()
-    context = None
-    for disease in disease_contexts:
-        if disease in q_lower:
-            context = disease_contexts[disease]
-            break
-    if context is None:
+    disease = find_closest_disease(question)
+    if disease:
+        context = disease_contexts[disease]
+    else:
+        # If disease not found, just combine all contexts as fallback context
         context = "\n".join(disease_contexts.values())
+
     result = qa_pipeline(question=question, context=context)
     return result["answer"]
 
+# Terminal chat
 if __name__ == "__main__":
-    print("Type 'exit' to end the chat.")
+    print("🤖 Chatbot ready! Type 'exit' to quit.")
     while True:
         user_input = input("You: ")
         if user_input.lower() == "exit":
+            print("👋 Goodbye!")
             break
         response = get_response(user_input)
         print(f"Chatbot: {response}")

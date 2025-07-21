@@ -1,3 +1,6 @@
+import os
+os.environ["HF_HOME"] = "D:/hfchche"
+
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from langdetect import detect

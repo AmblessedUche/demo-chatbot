@@ -1,10 +1,3 @@
-import os
-from huggingface_hub import InferenceClient
-
-client = InferenceClient(
-    model="HuggingFaceH4/zephyr-7b-beta",
-    token=os.getenv("HF_TOKEN")
-)
 
 from transformers import pipeline
 import difflib
