@@ -42,3 +42,7 @@ async def chat(msg: Message):
 async def appointment(app_data: Appointment):
     schedule_appointment(app_data.name, app_data.date, app_data.time, app_data.doctor)
     return {"status": "Appointment scheduled successfully!"}
+
+@app.get("/")
+def root():
+    return {"message": "Hello from AI Healthcare Assistant"}

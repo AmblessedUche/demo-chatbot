@@ -1,3 +1,9 @@
 transformers
 gradio
 torch
+fastapi
+uvicorn
+gunicorn
+langdetect
+pip freeze > requirements.txt
+
